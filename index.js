@@ -44,7 +44,7 @@ const DB = {
 }
 
 function auth(req, res, next) {
-    req.headers.authorization = "bearer" + tokenHeader;
+    req.headers.authorization = "bearer " + tokenHeader;
     const authToken = req.headers['authorization'];
     console.log(authToken)
 
@@ -154,13 +154,13 @@ io.on("conection", (socket) => {
         console.log("Saiu da sala");
     });
 
-    socket.on("messToServer", (data) => {
-        socket.emit("messToCient", {
+    socket.on("iniciaChat", (data) => {
+        socket.emit("showMessage", {
             email: data.email,
             mensagem: data.mensagem,
         });
 
-        socket.broadcast.emit("messToClient", {
+        socket.broadcast.emit("showMessage", {
             email: data.email,
             mensagem: data.mensagem,
         });

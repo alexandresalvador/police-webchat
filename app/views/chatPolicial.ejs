@@ -15,8 +15,8 @@
 
     <div class="container">
         <div class="header">
-             <img class="me-2" src="imagens/fantasma.png" />
-             <h1 class="text-title">Chat Ghost-App </h1>
+             <img class="me-2" src="imagens/policial.png" />
+             <h1 class="text-title">Chat da Policia de Joinville </h1>
         </div>
         <br>
         <hr>
@@ -56,7 +56,7 @@
                   onclick="enviar()"
                   id="btnEnviar"
                   type="button"
-                  class="btn btn-secondary btn-lg"
+                  class="btn btn-success btn-lg"
                 >
                   Enviar
                 </button>
@@ -70,8 +70,8 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
     <script>
-        const SERVER_URL = 'http://localhost:5000'
-        const socket = io(SERVER_URL);
+        // const SERVER_URL = 'http://localhost:5000'
+        // const socket = io(SERVER_URL);
         function enviar() {
             const userField = document.getElementById('username');
             const messageField = document.getElementById('mensagem');
@@ -79,7 +79,12 @@
             const mensagem = messageField.value;
             const dia = new Date().toLocaleDateString();
             const hora = new Date().toLocaleTimeString().slice(0, 5);
-            socket.emit('iniciaChat', { usuario, mensagem, dia, hora });
+            socket.emit('iniciaChat', { 
+                usuario: usuario, 
+                mensagem: mensagem, 
+                dia: dia, 
+                hora: hora, 
+            });
         }
         socket.on('showMessage', (data) => {
             console.log("Resultado: ", data);
