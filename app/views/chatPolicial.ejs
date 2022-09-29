@@ -31,13 +31,15 @@
         <div class="footer">
             <div class="mb-3" id="user-input">
                 <label for="username" class="form-label">
-                  <b>Digite o seu @Username:</b>
+                  
                 </label>
                 <input
                   id="username"
                   type="text"
                   class="form-control"
-                  placeholder="Usuário"
+                  placeholder="Usuário" hidden
+                  
+                  value="<%=dados.usuario%>"
                 />
               </div>
               <div class="mb-3" id="msg-input">
@@ -79,10 +81,10 @@
             const dia = new Date().toLocaleDateString();
             const hora = new Date().toLocaleTimeString().slice(0, 5);
             socket.emit("iniciaChat", { 
-                usuario: usuario, 
-                mensagem: mensagem, 
-                dia: dia, 
-                hora: hora, 
+                usuario: usuario.value, 
+                mensagem: mensagem.value, 
+                dia: dia.value, 
+                hora: hora.value, 
             });
         };
         socket.on("showMessage", (data) => {
@@ -103,11 +105,11 @@
           "text-light",    
         ];
         // As cores dos nomes de cada nome de usuário diferente serão geradas randômicamente.
-        const randomElement = 
+        const corAleatoria = 
         cores[Math.floor(Math.random() * cores.length)];
             col.innerHTML = 
             `<p class="m-0"> 
-            User : <b class="${randomElement}">
+            User : <b class="${corAleatoria}">
             @${data.usuario}</b> 
             <i class="m-0"> - 
             ${data.dia} - 

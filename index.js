@@ -144,7 +144,6 @@ const xpto = app.listen(5000, () => {
   });
 
 
-
 const io = require("socket.io")(xpto);
 
 io.on("conection", (socket) => {
