@@ -22,22 +22,22 @@ const DB = {
     usuarios: [
         {
             id: 1,
-            email : 'admin',
+            usuario : 'admin',
             password: 'admin123'
         },
         {
             id: 2,
-            email : 'policia',
+            usuario : 'policia',
             password: 'pol456'
         },
         {
             id: 3,
-            email : 'alex',
+            usuario : 'alex',
             password: 'alex789'
         },
         {
             id: 4,
-            email : 'joao',
+            usuario : 'joao',
             password: 'joao567'
         },
     ]
@@ -62,7 +62,7 @@ function auth(req, res, next) {
             }else {
                 console.log(data);
                 res.token = token;
-                req.loggedUser = { id: data.id, email: data.email };
+                req.loggedUser = { id: data.id, usuario: data.usuario };
                 console.log("O Usuário foi autorizado!");
                 next();
             }
@@ -89,23 +89,23 @@ app.get("/chat", auth, (req,res) => {
 })
 
 app.post('/auth', (req, res) => {
-    // const { email, password } = req.body;
+    // const { usuario, password } = req.body;
     // console.log("usuario", req.body)
     const formData = req.body;
     dados = formData;
-    const email = formData.email;
+    const usuario = formData.usuario;
     const password = formData.password;
 
-    if (email !== undefined) {
-        const user = DB.usuarios.find(u => u.email === email);
+    if (usuario !== undefined) {
+        const user = DB.usuarios.find(u => u.usuario === usuario);
         if (user !== undefined) {
             if (user.password === password) {
                 // gerando o nosso token assim que o usuario fez login com sucesso
-                // as informaçoes do payload do token serão id e email
+                // as informaçoes do payload do token serão id e usuario
                 // assinatura do token
                 TokenJwt.sign({
                     id: user.id,
-                    email: user.email,
+                    usuario: user.usuario,
                 }, JWTKey, { // checando  a chave secreta da minha aplicação
                     expiresIn: '1h' // tempo de expiração do token
                 }, (err, token) => {
@@ -117,8 +117,8 @@ app.post('/auth', (req, res) => {
                         res.status(200);
                         //res.json({ token });
                         tokenHeader = token;
-                        io.emit("messToClient", {
-                          email: formData.email,
+                        io.emit("showMessage", {
+                          usuario: formData.usuario,
                           mensagem: "Entrou no chat",
                         });
                         res.redirect("/chat");
@@ -126,7 +126,7 @@ app.post('/auth', (req, res) => {
                 })
             } else {
                 res.status(401)
-                res.json({ message: 'ERR2: Email ou password não coincidem.' });
+                res.json({ message: 'ERR2: usuario ou password não coincidem.' });
             }
         } else {
             res.status(404),
@@ -134,7 +134,7 @@ app.post('/auth', (req, res) => {
         }
     } else {
         res.status(400);
-        res.json({ message: 'ERR1: Email ou password não podem ser nulos.' })
+        res.json({ message: 'ERR1: usuario ou password não podem ser nulos.' })
     }
 });
 
@@ -156,13 +156,17 @@ io.on("conection", (socket) => {
 
     socket.on("iniciaChat", (data) => {
         socket.emit("showMessage", {
-            email: data.email,
+            usuario: data.usuario,
             mensagem: data.mensagem,
+            dia: data.dia,
+            hora: data.hora,
         });
 
         socket.broadcast.emit("showMessage", {
-            email: data.email,
+            usuario: data.usuario,
             mensagem: data.mensagem,
+            dia: data.dia,
+            hora: data.hora,
         });
     });
 });
