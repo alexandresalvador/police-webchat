@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Chat Policial </title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+             <img class="me-2" src="imagens/fantasma.png" />
+             <h1 class="text-title">Chat Ghost-App </h1>
+        </div>
+        <br>
+        <hr>
+
+        <div class="row m-0 justify-content-between">
+          <div id="chat" class="col-12 bg-light rounded"></div>
+          <div class="col-3 p-0">
+          </div>
+        </div>
+        <hr>
+
+        <div class="footer">
+            <div class="mb-3" id="user-input">
+                <label for="username" class="form-label">
+                  <b>Digite o seu @Username:</b>
+                </label>
+                <input
+                  id="username"
+                  type="text"
+                  class="form-control"
+                  placeholder="Usuário"
+                />
+              </div>
+              <div class="mb-3" id="msg-input">
+                <label for="exampleFormControlTextarea1" class="form-label">
+                  <b>Digite a sua mensagem:</b>
+                </label>
+                <textarea
+                  id="mensagem"
+                  class="form-control"
+                  rows="2"
+                  placeholder="Insira uma mensagem"
+                ></textarea>
+              </div>
+              <div class="d-flex justify-content-center">
+                <button
+                  onclick="enviar()"
+                  id="btnEnviar"
+                  type="button"
+                  class="btn btn-secondary btn-lg"
+                >
+                  Enviar
+                </button>
+              </div>
+              <br>
+              <br>
+       </div>
+      </div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+    <script>
+        const SERVER_URL = 'http://localhost:5000'
+        const socket = io(SERVER_URL);
+        function enviar() {
+            const userField = document.getElementById('username');
+            const messageField = document.getElementById('mensagem');
+            const usuario = userField.value;
+            const mensagem = messageField.value;
+            const dia = new Date().toLocaleDateString();
+            const hora = new Date().toLocaleTimeString().slice(0, 5);
+            socket.emit('iniciaChat', { usuario, mensagem, dia, hora });
+        }
+        socket.on('showMessage', (data) => {
+            console.log("Resultado: ", data);
+            const chatScreen = document.getElementById('chat')
+            const col = document.createElement('div');
+        col.classList.add(
+          "bg-msg",
+          "col",
+          "p-1",
+          "m-2"
+        );
+        const cores = [
+          "text-primary",
+          "text-secondary",
+          "text-dark",         
+          "text-danger",
+          "text-light",    
+        ];
+        // As cores dos nomes de cada nome de usuário diferente serão geradas randômicamente.
+        const randomElement = 
+        cores[Math.floor(Math.random() * cores.length)];
+            col.innerHTML = 
+            `<p class="m-0"> 
+            User : <b class="${randomElement}">
+            @${data.usuario}</b> 
+            <i class="m-0"> - 
+            ${data.dia} - 
+            ${data.hora}</i><br/> 
+            Mensagem : <b> ${data.mensagem}</b> 
+            </p>`;
+            chatScreen.append(col);
+        });
+    </script>
+
+
+</body>
+
+</html>
